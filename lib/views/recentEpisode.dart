@@ -12,7 +12,7 @@ class RecentEpisodes extends StatefulWidget {
 }
 
 class _RecentEpisodesState extends State<RecentEpisodes> {
-  List<RecentEps> list = [];
+  static List<RecentEps> list = [];
   int page = 1;
   bool isLoaded = false;
 

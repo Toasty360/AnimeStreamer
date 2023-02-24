@@ -14,7 +14,7 @@ class search extends StatefulWidget {
 class _searchState extends State<search> {
 
 
-  List<Anime> data = [];
+  static List<Anime> data = [];
   final _controller = TextEditingController();
   
   Future<void> getAnime(var value) async {
