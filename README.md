@@ -1,6 +1,6 @@
 # Anime Streaming Application
 
-A new Flutter project.
+An anime streaming application developed using flutter.
 
 ## Getting Started
 
@@ -23,6 +23,12 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+## Download
+
+Get app from here <a href="https://github.com/18BQ1A05G8/AnimeStreamer/releases/"> releases page</a>.
+If you want to try new features, use your <a href="https://rapidapi.com/">own Api</a> for getting anime details.
+
 
 ## Licence
 
