@@ -32,7 +32,7 @@ If you want to try new features, use your <a href="https://rapidapi.com/">own Ap
 
 ## Licence
 
-Copyright © 2016 ToasT. All rights reserved.
+Copyright © 2022 ToasT. All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
