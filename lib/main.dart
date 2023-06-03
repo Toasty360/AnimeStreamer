@@ -1,19 +1,17 @@
-import 'package:animeapp/views/home.dart';
+// ignore: unused_import
+import 'dart:ui';
+
+import 'package:animeapp/views/splash.dart';
 import 'package:flutter/material.dart';
-
-import 'views/Login.dart';
-import 'views/createloginpin.dart';
-
+import 'package:get/get.dart';
 void main(List<String> args) {
-  runApp(MaterialApp(
+  runApp(GetMaterialApp(
     theme: ThemeData(fontFamily: 'Open_Sans'),
-
     debugShowCheckedModeBanner: false,
-    initialRoute: '/loginPage',
+    initialRoute: '/home',
     routes: {
-      '/loginPage': (context) => const Login(),
-      '/home':(context) => const Home(),
-      '/createpinpage': (context) => const CreatePinPage(),
+      '/home': (context) => Splash(),
     },
   ));
 }
+

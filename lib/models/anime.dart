@@ -4,21 +4,29 @@ class Anime {
   final String? animeUrl;
   final String? animeImg;
   final String? status;
-
+  final String? subOrDub;
   Anime(
       {this.animeId,
       this.animeTitle,
       this.animeUrl,
       this.animeImg,
-      this.status});
+      this.status,
+      this.subOrDub});
 
-  factory Anime.fromJson(dynamic json) {
+  static List<Anime> animeListFromSnapShot(List json) {
+    return json.map((data) {
+      return Anime.fromJson(data);
+    }).toList();
+  }
+
+  factory Anime.fromJson(json) {
     return Anime(
-        animeId: json['animeId'] as String,
-        animeTitle: json['animeTitle'] as String,
-        animeUrl: json['animeUrl'] as String,
-        animeImg: json['animeImg'] as String,
-        status: json['status'] as String);
+        animeId: json['id'],
+        animeTitle: json['title'],
+        animeUrl: json['url'],
+        animeImg: json['image'],
+        status: json['releaseDate'],
+        subOrDub: json['subOrDub']);
   }
 
   static Map<String, dynamic> toJson(Anime data) {
@@ -31,19 +39,13 @@ class Anime {
     };
   }
 
-  static List<Anime> animeListFromSnapShot(List Snapshot) {
-    return Snapshot.map((data) {
-      return Anime.fromJson(data);
-    }).toList();
-  }
-  
   static List<Anime> popularAnime(List Snapshot) {
     return Snapshot.map((data) {
       return Anime.fromJson(data);
     }).toList();
   }
 
-  static Anime toAnime(dynamic data){
+  static Anime toAnime(dynamic data) {
     return Anime(
         animeId: data["animeId"],
         animeTitle: data["animeTitle"],
@@ -64,5 +66,17 @@ class Anime {
   @override
   String toString() {
     return 'Anime{ name : $animeTitle, url:$animeUrl, img : $animeImg, status : $status}';
+  }
+}
+
+class TopAnimeModel {
+  final String id;
+  final String title;
+  final String url;
+
+  TopAnimeModel(this.id, this.title, this.url);
+
+  TopAnimeModel toTopAir(json) {
+    return TopAnimeModel(json["id"], json["title"], json["url"]);
   }
 }
