@@ -38,7 +38,7 @@ class AnimeCard extends StatelessWidget {
       //   ),
       // ),
       decoration: BoxDecoration(
-        border: Border.all(width: 1, color: Colors.white70),
+          // border: Border.all(width: 1, color: Colors.white70),
           borderRadius: BorderRadius.circular(10),
           image: DecorationImage(
             fit: BoxFit.cover,
@@ -66,8 +66,7 @@ class AnimeCard extends StatelessWidget {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => AnimeDetailsContainer(
-                      {"id": item.animeId!, "title": item.animeTitle!})));
+                  builder: (context) => AnimeDetailsContainer(item)));
           // print("after navi");
         },
         child: Row(children: [
@@ -99,14 +98,14 @@ class AnimeCard extends StatelessWidget {
                       item.animeTitle!,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
-                          fontSize: 18,
+                          fontSize: 20,
                           color: Colors.amberAccent,
                           fontWeight: FontWeight.bold),
                       overflow: TextOverflow.clip,
                       // maxLines: 2,
                     )),
                 const Divider(
-                  height: 2,
+                  height: 10,
                 ),
                 SizedBox(
                     width: 150,
@@ -114,44 +113,56 @@ class AnimeCard extends StatelessWidget {
                       item.status!,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
-                          fontSize: 12,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.green),
                       overflow: TextOverflow.clip,
                       maxLines: 2,
                     )),
                 const Divider(),
-                Container(
-                    alignment: Alignment.centerRight,
-                    width: 100,
-                    decoration: const BoxDecoration(
-                        // border: Border.all(width: 2)
-                        ),
-                    child: ElevatedButton(
-                        child: const Icon(Icons.add),
-                        onPressed: () async {
-                          AnimeDataController animegetcont = Get.find();
-                          animegetcont.addItemToList(item);
-                          print("length at animeCard after adding the item");
-                          print(animegetcont.x.length);
-                          // if (!duplicateFilter.contains(item.animeId)) {
-                          //   mylist.insert(0, item);
-                          //   duplicateFilter.add(item.animeId);
-                          //   ScaffoldMessenger.of(context).showSnackBar(
-                          //       const SnackBar(
-                          //           backgroundColor: Color(0xff1e88e5),
-                          //           content: Center(
-                          //               child: Text(
-                          //                   'Anime added to your list :)'))));
-                          // } else {
-                          //   ScaffoldMessenger.of(context).showSnackBar(
-                          //       const SnackBar(
-                          //           backgroundColor: Color(0xff1e88e5),
-                          //           content: Center(
-                          //               child: Text(
-                          //                   'Duplicates can\'t be added :('))));
-                          // }
-                        }))
+                SizedBox(
+                    width: 150,
+                    child: Text(
+                      item.subOrDub!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green),
+                      overflow: TextOverflow.clip,
+                      maxLines: 2,
+                    )),
+                // Container(
+                //     alignment: Alignment.centerRight,
+                //     width: 100,
+                //     decoration: const BoxDecoration(
+                //         // border: Border.all(width: 2)
+                //         ),
+                //     child: ElevatedButton(
+                //         child: const Icon(Icons.add),
+                //         onPressed: () async {
+                //           AnimeDataController animegetcont = Get.find();
+                //           animegetcont.addItemToList(item);
+                //           print("length at animeCard after adding the item");
+                //           print(animegetcont.x.length);
+                //           // if (!duplicateFilter.contains(item.animeId)) {
+                //           //   mylist.insert(0, item);
+                //           //   duplicateFilter.add(item.animeId);
+                //           //   ScaffoldMessenger.of(context).showSnackBar(
+                //           //       const SnackBar(
+                //           //           backgroundColor: Color(0xff1e88e5),
+                //           //           content: Center(
+                //           //               child: Text(
+                //           //                   'Anime added to your list :)'))));
+                //           // } else {
+                //           //   ScaffoldMessenger.of(context).showSnackBar(
+                //           //       const SnackBar(
+                //           //           backgroundColor: Color(0xff1e88e5),
+                //           //           content: Center(
+                //           //               child: Text(
+                //           //                   'Duplicates can\'t be added :('))));
+                //           // }
+                //         }))
               ],
             ),
           ),

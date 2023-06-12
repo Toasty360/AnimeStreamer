@@ -22,18 +22,24 @@ class _CarouselContainerState extends State<CarouselContainer> {
     imgList = widget.topAnime;
     imageSliders = imgList
         .map((item) => GestureDetector(
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => AnimeDetailsContainer(
-                        {"id": item.id, "title": item.title})));
-          },
-          child: Container(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AnimeDetailsContainer(Anime(
+                            animeId: item.id,
+                            animeImg: item.url,
+                            animeTitle: item.title,
+                            animeUrl: "null",
+                            status: "null",
+                            subOrDub: "null"))));
+              },
+              child: Container(
                 child: Container(
                   // margin: const EdgeInsets.all(5.0),
                   child: ClipRRect(
-                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(5.0)),
                       child: Stack(
                         children: <Widget>[
                           Image.network(
@@ -62,7 +68,7 @@ class _CarouselContainerState extends State<CarouselContainer> {
                               padding: const EdgeInsets.symmetric(
                                   vertical: 10.0, horizontal: 20.0),
                               child: Text(
-                                item.title!=""?item.title:item.id,
+                                item.title != "" ? item.title : item.id,
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 15.0,
@@ -75,7 +81,7 @@ class _CarouselContainerState extends State<CarouselContainer> {
                       )),
                 ),
               ),
-        ))
+            ))
         .toList();
     if (imgList.isNotEmpty) isDataReady = true;
   }
@@ -84,17 +90,17 @@ class _CarouselContainerState extends State<CarouselContainer> {
   Widget build(BuildContext context) {
     return isDataReady
         ? Container(
-          // height: 200,
-          width: double.maxFinite,
-          child: CarouselSlider(
-            options: CarouselOptions(
-              autoPlay: true,
-              aspectRatio: 2.0,
-              enlargeCenterPage: true,
+            // height: 200,
+            width: double.maxFinite,
+            child: CarouselSlider(
+              options: CarouselOptions(
+                autoPlay: true,
+                aspectRatio: 2.0,
+                enlargeCenterPage: true,
+              ),
+              items: imageSliders,
             ),
-            items: imageSliders,
-          ),
-        )
+          )
         : const Center();
   }
 }

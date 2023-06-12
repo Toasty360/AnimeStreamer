@@ -5,25 +5,34 @@ import 'package:animeapp/models/anime.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 
-class AnimeDataController extends GetxController{
+class AnimeDataController extends GetxController {
+  List<Anime> _savedList = [];
 
-  List<Anime> _savedList=[];
+  List<Anime> get x => _savedList;
 
-  List<Anime> get x=>_savedList;
-
-  AnimeDataController(){
+  AnimeDataController() {
     getInitialData();
   }
 
   //loads the data from the local file
   //it happens only once
-  void getInitialData() async{
-    _savedList=await readLocalWatchList();
+  void getInitialData() async {
+    _savedList = await readLocalWatchList();
   }
 
-  void addItemToList(Anime item){
+  void setData(List<Anime> newList) {
+    _savedList = newList;
+    writeWatchlistToFile();
+  }
+
+  void removeAt(int i) {
+    _savedList.removeAt(i);
+    writeWatchlistToFile();
+  }
+
+  void addItemToList(Anime item) {
     _savedList.add(item);
-    _savedList=_savedList.toSet().toList();
+    _savedList = _savedList.toSet().toList();
     writeWatchlistToFile();
     update();
   }
@@ -56,14 +65,4 @@ class AnimeDataController extends GetxController{
     final file = await _localFile;
     return file.writeAsString(jsonData);
   }
-
 }
-
-class ApiGetter extends GetxController{
-  String _ApiUrl="https://consumet-api-fit7.onrender.com/";
-  String get x=>_ApiUrl;
-  void updateApi(String newApi){
-    _ApiUrl=newApi;
-    update();
-  }
-} 

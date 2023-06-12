@@ -8,7 +8,7 @@ class Cards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: const EdgeInsets.all(10),
+        margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           image: DecorationImage(
@@ -34,8 +34,7 @@ class Cards extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => AnimeDetailsContainer(
-                        {"id": item.animeId!, "title": item.animeTitle!})));
+                    builder: (context) => AnimeDetailsContainer(item)));
           },
           child: Row(children: [
             Container(
@@ -71,7 +70,10 @@ class Cards extends StatelessWidget {
                       SizedBox(
                         width: 150,
                         child: Text(
-                          item.animeTitle!,
+                          item.animeTitle == ""
+                              ? item.animeId!
+                              : item.animeTitle!,
+                          // item.title != "" ? item.title : item.id,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                               fontSize: 18,

@@ -73,10 +73,23 @@ class TopAnimeModel {
   final String id;
   final String title;
   final String url;
+  final String geners;
 
-  TopAnimeModel(this.id, this.title, this.url);
-
+  TopAnimeModel(this.id, this.title, this.url, this.geners);
   TopAnimeModel toTopAir(json) {
-    return TopAnimeModel(json["id"], json["title"], json["url"]);
+    return TopAnimeModel(
+        json["id"], json["title"], json["url"], json["genres"]);
+  }
+
+  TopAirToAnimeData(TopAnimeModel item) {
+    return Anime(
+        animeId: item.id,
+        animeImg: "null",
+        animeTitle: item.title,
+        animeUrl: "null",
+        status: "null",
+        subOrDub: "null");
   }
 }
+
+class ScheduleData {}

@@ -237,7 +237,7 @@ class RecentEps {
   final String title;
   final String image;
   final String url;
-
+  
   RecentEps(
       {required this.id,
       required this.episodeId,

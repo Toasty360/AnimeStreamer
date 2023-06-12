@@ -1,8 +1,7 @@
+import 'package:animeapp/models/anime.dart';
 import 'package:animeapp/models/animeApi.dart';
 import 'package:animeapp/models/animeDetails.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-
 import 'animeDetailsContainer.dart';
 
 class RecentEpisodes extends StatefulWidget {
@@ -15,7 +14,7 @@ class RecentEpisodes extends StatefulWidget {
 class _RecentEpisodesState extends State<RecentEpisodes> {
   static List<RecentEps> list = [];
   int page = 1;
-  bool isLoaded = false;
+  static bool isLoaded = false;
 
   fetchdata() async {
     List<RecentEps> data = await AnimeApi.getRecentEps('$page');
@@ -30,7 +29,17 @@ class _RecentEpisodesState extends State<RecentEpisodes> {
   @override
   void initState() {
     super.initState();
-    fetchdata();
+    if (list.isEmpty) fetchdata();
+  }
+
+  refreshData() async {
+    List<RecentEps> data = await AnimeApi.getRecentEps("1");
+    setState(() {
+      list.addAll(data);
+      list = list.toSet().toList();
+      isLoaded = true;
+      page++;
+    });
   }
 
   @override
@@ -39,17 +48,22 @@ class _RecentEpisodesState extends State<RecentEpisodes> {
       backgroundColor: const Color(0xFF17203A),
       body: NotificationListener<ScrollNotification>(
         onNotification: (notification) {
+          // if(notification.metrics.pixels>=notification.metrics.extentBefore){
+          //   print("time to refresh");
+          // }
+          if (notification.metrics.outOfRange) {
+            print(notification.metrics.pixels);
+          }
           if (notification.metrics.pixels ==
                   notification.metrics.maxScrollExtent &&
               isLoaded) {
             isLoaded = false;
-
             Future.microtask(
               () async {
                 List<RecentEps> data = await AnimeApi.getRecentEps("$page");
                 setState(() {
                   list.addAll(data);
-                  isLoaded=true;
+                  isLoaded = true;
                   page++;
                 });
               },
@@ -58,127 +72,122 @@ class _RecentEpisodesState extends State<RecentEpisodes> {
           return true;
         },
         child: isLoaded
-            ? ListView.builder(
-                itemCount: list.length,
-                itemBuilder: (context, index) {
-                  return AnimationConfiguration.staggeredGrid(
-                      position: index,
-                      duration: const Duration(milliseconds: 50),
-                      columnCount: index,
-                      child: ScaleAnimation(
-                          duration: const Duration(milliseconds: 150),
-                          curve: Curves.fastLinearToSlowEaseIn,
-                          child: FadeInAnimation(
-                              child: Container(
-                            margin: const EdgeInsets.all(5),
-                            padding: const EdgeInsets.all(3),
-                            // decoration: BoxDecoration(
-                            //   borderRadius: BorderRadius.circular(10),
-                            //   gradient: LinearGradient(
-                            //     begin: Alignment.topLeft,
-                            //     end: Alignment.bottomRight,
-                            //     colors: [
-                            //       Colors.grey.shade200,
-                            //       Colors.grey.shade300,
-                            //       Colors.grey.shade500,
-                            //       Colors.grey.shade600,
-                            //     ],
-                            //   ),
-                            // ),
-                            child: GestureDetector(
-                                onTap: () async {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              AnimeDetailsContainer({
-                                                "id": list[index].id,
-                                                "title": list[index].title
-                                              })));
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.all(10),
-                                  height: 150,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        opacity: 0.09,
-                                        colorFilter: const ColorFilter
-                                            .srgbToLinearGamma(),
-                                        scale: 1.5,
-                                        image: NetworkImage(list[index].image),
-                                        onError: (exception, stackTrace) {
-                                          Container(
-                                              color: Colors.amber,
-                                              alignment: Alignment.center,
-                                              child: const Text(
-                                                'Whoops!',
-                                                style: TextStyle(fontSize: 20),
-                                              ));
-                                        },
-                                      )),
-                                  child: Row(
+            ? RefreshIndicator(
+                onRefresh: () => refreshData(),
+                child: ListView.builder(
+                    itemCount: list.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(3),
+                        // decoration: BoxDecoration(
+                        //   borderRadius: BorderRadius.circular(10),
+                        //   gradient: LinearGradient(
+                        //     begin: Alignment.topLeft,
+                        //     end: Alignment.bottomRight,
+                        //     colors: [
+                        //       Colors.grey.shade200,
+                        //       Colors.grey.shade300,
+                        //       Colors.grey.shade500,
+                        //       Colors.grey.shade600,
+                        //     ],
+                        //   ),
+                        // ),
+                        child: GestureDetector(
+                            onTap: () async {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          AnimeDetailsContainer(Anime(
+                                              animeId: list[index].id,
+                                              animeImg: list[index].image,
+                                              animeTitle: list[index].title,
+                                              animeUrl: "null",
+                                              status: "null",
+                                              subOrDub: "null"))));
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(10),
+                              height: 150,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    opacity: 0.09,
+                                    colorFilter:
+                                        const ColorFilter.srgbToLinearGamma(),
+                                    scale: 1.5,
+                                    image: NetworkImage(list[index].image),
+                                    onError: (exception, stackTrace) {
+                                      Container(
+                                          color: Colors.amber,
+                                          alignment: Alignment.center,
+                                          child: const Text(
+                                            'Whoops!',
+                                            style: TextStyle(fontSize: 20),
+                                          ));
+                                    },
+                                  )),
+                              child: Row(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    child: Image.network(
+                                      list[index].image,
+                                      height: 400,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return Container(
+                                            color: Colors.amber,
+                                            alignment: Alignment.center,
+                                            child: const Text(
+                                              'Whoops!',
+                                              style: TextStyle(fontSize: 30),
+                                            ));
+                                      },
+                                    ),
+                                  ),
+                                  Expanded(
+                                      child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        child: Image.network(
-                                          list[index].image,
-                                          height: 400,
-                                          errorBuilder:
-                                              (context, error, stackTrace) {
-                                            return Container(
-                                                color: Colors.amber,
-                                                alignment: Alignment.center,
-                                                child: const Text(
-                                                  'Whoops!',
-                                                  style:
-                                                      TextStyle(fontSize: 30),
-                                                ));
-                                          },
+                                      Container(
+                                        // decoration: BoxDecoration(border: Border.all(width: 10, color: Colors.black)),
+                                        padding:
+                                            const EdgeInsets.only(left: 10),
+                                        width: 200,
+                                        child: Text(
+                                          list[index].title != ""
+                                              ? list[index].title
+                                              : list[index].id,
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white),
+                                          maxLines: 2,
+                                          textAlign: TextAlign.center,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
-                                      Expanded(
-                                          child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                            // decoration: BoxDecoration(border: Border.all(width: 10, color: Colors.black)),
-                                            padding:
-                                                const EdgeInsets.only(left: 10),
-                                            width: 200,
-                                            child: Text(
-                                              list[index].title != ""
-                                                  ? list[index].title
-                                                  : list[index].id,
-                                              style: const TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white),
-                                              maxLines: 2,
-                                              textAlign: TextAlign.center,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                          Container(
-                                            margin: EdgeInsets.only(top: 10),
-                                            child: Text(
-                                              list[index].episodeNumber,
-                                              style: const TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.green),
-                                            ),
-                                          )
-                                        ],
-                                      ))
+                                      Container(
+                                        margin: EdgeInsets.only(top: 10),
+                                        child: Text(
+                                          list[index].episodeNumber,
+                                          style: const TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.green),
+                                        ),
+                                      )
                                     ],
-                                  ),
-                                )),
-                          ))));
-                })
+                                  ))
+                                ],
+                              ),
+                            )),
+                      );
+                    }),
+              )
             : Center(
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,

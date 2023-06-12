@@ -1,12 +1,17 @@
+import 'package:animeapp/models/anime.dart';
+import 'package:animeapp/models/animeDetails_get.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../models/animeApi.dart';
 import '../models/animeDetails.dart';
 import 'streamEpisode.dart';
 
 class AnimeDetailsContainer extends StatefulWidget {
-  final Map<String, String> data;
-  const AnimeDetailsContainer(this.data, {super.key});
+  // final Map<String, String> data;
+  final Anime item;
+  const AnimeDetailsContainer(this.item, {super.key});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -14,20 +19,24 @@ class AnimeDetailsContainer extends StatefulWidget {
 }
 
 class _AnimeDetailsContainerState extends State<AnimeDetailsContainer> {
-  var genreLength = 0;
-  var genreString = "";
+  static var genreLength = 0;
+  static var genreString = "";
   static Map<String, AnimeDetails> tempAniDetails = {};
   bool status = true;
   bool isLoaded = false;
   // late AnimeDetails? itemDetails = AnimeDetails.dummydata();
   late List<AnimeDetails> itemDetails = [];
+  AnimeDataController animedatacont = Get.put(AnimeDataController());
+  bool isSaved = false;
+  int savedIndex = -1;
 
   fetchData() async {
-    var temp = await AnimeApi.getAnime(widget.data["id"]!);
+    var temp = await AnimeApi.getAnime(widget.item.animeId!);
+
     setState(() {
       isLoaded = true;
       itemDetails = [temp];
-      tempAniDetails[widget.data["title"]!] = temp;
+      tempAniDetails[widget.item.animeTitle!] = temp;
       genreString = itemDetails[0].genres.toString();
       status = itemDetails[0].status == "Completed" ? true : false;
       genreString = genreString.substring(1, genreString.length - 1);
@@ -37,11 +46,18 @@ class _AnimeDetailsContainerState extends State<AnimeDetailsContainer> {
 
   @override
   void initState() {
-    if (tempAniDetails.containsKey(widget.data["title"])) {
-      itemDetails = [tempAniDetails[widget.data["title"]]!];
+    for (var item in animedatacont.x) {
+      if (item.animeTitle == widget.item.animeTitle) {
+        isSaved = true;
+        savedIndex = animedatacont.x.indexOf(item);
+      }
+    }
+    if (tempAniDetails.containsKey(widget.item.animeTitle)) {
+      itemDetails = [tempAniDetails[widget.item.animeTitle]!];
     } else {
       fetchData();
     }
+    setState(() {});
   }
 
   @override
@@ -59,6 +75,29 @@ class _AnimeDetailsContainerState extends State<AnimeDetailsContainer> {
                   color: Colors.white,
                 ),
               ),
+              actions: [
+                // TextButton(child: isSaved?Text("Saved") ,onPressed: ())
+                IconButton(
+                  onPressed: () {
+                    if (isSaved) {
+                      animedatacont.removeAt(savedIndex);
+                      isSaved = false;
+                    } else {
+                      animedatacont.addItemToList(Anime(
+                          animeId: itemDetails[0].id,
+                          animeImg: itemDetails[0].animeImg,
+                          animeTitle: itemDetails[0].title,
+                          animeUrl: itemDetails[0].url,
+                          status: itemDetails[0].status,
+                          subOrDub: itemDetails[0].subOrDub));
+                      isSaved = true;
+                    }
+                    setState(() {});
+                  },
+                  icon: Icon(MdiIcons.bookmark),
+                  color: isSaved ? Colors.greenAccent : Colors.white,
+                )
+              ],
             ),
             body: Container(
                 // margin: const EdgeInsets.only(top: 10),
@@ -226,7 +265,7 @@ class _AnimeDetailsContainerState extends State<AnimeDetailsContainer> {
         : Scaffold(
             backgroundColor: const Color(0xFF17203A),
             appBar: AppBar(
-                title: Text("${widget.data["title"]}"),
+                title: Text("${widget.item.animeTitle}"),
                 backgroundColor: const Color(0xFF17203A)),
             body: Center(
                 child: Column(
